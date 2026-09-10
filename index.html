@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>＜＞＜ GENERATED IMAGES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            border: 3px solid #00ff00;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.2),
+                    rgba(0, 0, 0, 0.2) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .total-count {
+            font-size: 0.8rem;
+            color: #00ff00;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #00ff00;
+            margin: 20px 0;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.2rem;
+            color: #00ff00;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            grid-column: 1 / -1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+            gap: 15px;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            animation: zoomIn 0.2s ease-in-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .copy-btn {
+            background: #000;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .copy-btn:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .copy-btn:active {
+            background: #00ff00;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>＜＞＜ GENERATED IMAGES</h1>
+            <div id="total-count" class="total-count">TOTAL IMAGES: 0</div>
+        </header>
+
+        <div id="loading">▓▒░ LOADING IMAGES... ░▒▓</div>
+
+        <div class="gallery" id="gallery"></div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="Enlarged view">
+            <button id="copyBtn" class="copy-btn">COPY IMAGE LINK</button>
+        </div>
+    </div>
+
+    <script>
+        const dataUrl = 'https://gist.githubusercontent.com/TheZiver/13fc44e6b228346750401f7fbfc995ed/raw/d35fd8bda860dd482480fad31e4951d6c08bb8b0/structured_chaos_community_ecosystem_data.json';
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const copyBtn = document.getElementById('copyBtn');
+
+        let currentImageUrl = '';
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === modalImg) {
+                modal.style.display = 'none';
+            }
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            if (!currentImageUrl) return;
+            try {
+                await navigator.clipboard.writeText(currentImageUrl);
+                copyBtn.textContent = 'COPIED!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'COPY IMAGE LINK';
+                }, 2000);
+            } catch (err) {
+                copyBtn.textContent = 'FAILED';
+            }
+        });
+
+        async function fetchImages() {
+            try {
+                const response = await fetch(dataUrl);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const daily = data.daily_vrchat;
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = '';
+
+                let images = [];
+
+                if (daily.schedule_image && daily.schedule_image.url) {
+                    images.push({ url: daily.schedule_image.url, label: 'daily_schedule' });
+                }
+
+                if (daily['winner '] && daily['winner '].length > 0 && daily['winner '][0].gif_url) {
+                    images.push({ url: daily['winner '][0].gif_url, label: 'wheel_spin' });
+                }
+
+                if (daily.image_links) {
+                    daily.image_links.forEach(item => {
+                        images.push({ url: item.url, label: item.tag });
+                    });
+                }
+
+                let count = 0;
+                images.forEach(item => {
+                    count++;
+                    const container = document.createElement('div');
+                    container.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px';
+
+                    const img = document.createElement('img');
+                    img.src = item.url;
+                    img.alt = item.label;
+                    img.title = item.label;
+                    img.style.cssText = 'width:100%;aspect-ratio:1/1;object-fit:cover;border:2px solid #00ff00;cursor:pointer;transition:all 0.1s ease;background:#000;display:block';
+
+                    const label = document.createElement('span');
+                    label.textContent = item.label.replace(/_/g, ' ');
+                    label.style.cssText = 'color:#00ff00;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:bold;text-align:center;word-break:break-word';
+
+                    img.addEventListener('mouseenter', () => {
+                        img.style.background = '#00ff00';
+                        img.style.borderColor = '#00ff00';
+                        img.style.boxShadow = '0 0 10px rgba(0,255,0,0.3)';
+                    });
+                    img.addEventListener('mouseleave', () => {
+                        img.style.background = '#000';
+                        img.style.borderColor = '#00ff00';
+                        img.style.boxShadow = 'none';
+                    });
+
+                    img.addEventListener('click', () => {
+                        currentImageUrl = item.url;
+                        modalImg.src = item.url;
+                        modal.style.display = 'flex';
+                    });
+
+                    container.appendChild(img);
+                    container.appendChild(label);
+                    gallery.appendChild(container);
+                });
+
+                document.getElementById('total-count').textContent = 'TOTAL IMAGES: ' + count;
+
+                if (gallery.children.length === 0) {
+                    gallery.innerHTML = '<div class="no-results">╳ NO IMAGES FOUND</div>';
+                }
+
+            } catch (error) {
+                document.getElementById('gallery').innerHTML =
+                    '<div class="no-results">╳ FAILED TO LOAD IMAGES</div>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        fetchImages();
+    </script>
+</body>
+</html>
